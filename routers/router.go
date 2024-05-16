@@ -14,6 +14,8 @@ func NewRouter(store *storage.InMemoryStore) *mux.Router {
     bookHandler := handlers.BookHandler{Store: store}
 
     router.Use(middleware.Logger)
+	router.Use(middleware.RateLimit)
+	
     router.Handle("/books", middleware.ValidateBook(http.HandlerFunc(bookHandler.CreateBook))).Methods("POST")
     router.HandleFunc("/books/{id}", bookHandler.GetBook).Methods("GET")
     router.Handle("/books/{id}", middleware.ValidateBook(http.HandlerFunc(bookHandler.UpdateBook))).Methods("PUT")
